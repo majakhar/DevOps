@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Arithmetic Flask App</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 40px; }
+      .container { max-width: 480px; margin: auto; }
+      input, select { width: 100%; padding: 8px; margin: 6px 0; }
+      button { padding: 8px 12px; }
+      .result { background: #f3f3f3; padding: 12px; margin-top: 12px; }
+      .error { color: red; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Arithmetic Operations</h1>
+
+      {% if error %}
+        <div class="error">Error: {{ error }}</div>
+      {% endif %}
+
+      <form method="post" action="/calculate">
+        <label>Number A</label>
+        <input type="text" name="a" value="{{ a or '' }}" required>
+
+        <label>Number B</label>
+        <input type="text" name="b" value="{{ b or '' }}" required>
+
+        <label>Operation</label>
+        <select name="operation">
+          <option value="add" {% if operation=='add' %}selected{% endif %}>Add (+)</option>
+          <option value="subtract" {% if operation=='subtract' %}selected{% endif %}>Subtract (-)</option>
+          <option value="multiply" {% if operation=='multiply' %}selected{% endif %}>Multiply (×)</option>
+          <option value="divide" {% if operation=='divide' %}selected{% endif %}>Divide (÷)</option>
+        </select>
+
+        <button type="submit">Calculate</button>
+      </form>
+
+      {% if result is not none %}
+        <div class="result">Result: {{ result }}</div>
+      {% endif %}
+
+      <hr>
+      <h3>API Example (curl)</h3>
+      <pre>curl -X POST -H "Content-Type: application/json" -d '{"a":5,"b":3,"operation":"add"}' http://127.0.0.1:8083/api/calc</pre>
+    </div>
+  </body>
+</html>

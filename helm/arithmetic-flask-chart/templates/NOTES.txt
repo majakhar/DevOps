@@ -1,0 +1,10 @@
+Thank you for installing arithmetic-flask.
+
+To verify the deployment:
+  - minikube image load calc:v0.1
+  - Run: kubectl get pods -l app.kubernetes.io/name=arithmetic-flask -n <namespace>
+  - Forward port locally: kubectl port-forward svc/{{ include "arithmetic-flask.fullname" . }} 8083:80
+  - Visit: http://localhost:8083
+
+To override image values when installing:
+  helm install my-release ./arithmetic-flask-chart --set image.repository="calc" --set image.tag=v0.1

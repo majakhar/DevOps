@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "arithmetic-flask.fullname" . }}
+  labels:
+    {{- include "arithmetic-flask.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "arithmetic-flask.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        {{- include "arithmetic-flask.labels" . | nindent 8 }}
+    spec:
+{{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ include "arithmetic-flask.serviceAccountName" . }}
+{{- else if .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+{{- end }}
+      containers:
+        - name: {{ include "arithmetic-flask.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
